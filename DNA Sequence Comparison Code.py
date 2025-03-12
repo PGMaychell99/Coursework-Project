@@ -1,7 +1,9 @@
 from Bio import SeqIO
 from Bio import pairwise2
+multi_seqfn = "dog_breeds.fa"
+mystery_seqfn = "mystery.fa"
 
-def DNA_Seq_ID(multi_seqfn: str = "dog_breeds.fa") -> sequence [str]:
+def DNA_Seq_ID(multi_seqfn: str) -> dict:
     """ Reads in FASTA file and returns a dictionary of sequences.
 
 
@@ -12,7 +14,7 @@ def DNA_Seq_ID(multi_seqfn: str = "dog_breeds.fa") -> sequence [str]:
             sequences[record.id] = str(record.seq) #uses biopython to iterate over each line in the file and store the sequences in a dictionary
     return sequences
 
-def find_best_match(mystery_seqfn: str = "mystery.fa") -> sequence [str]:
+def find_best_match(mystery_seqfn: str, sequences: dict) -> tuple:
     """ Find the closest sequence in the multi-sequence file to the mystery sequence.
 
         Takes the dictionary from FASTA file conversion dictionary
@@ -30,10 +32,11 @@ def find_best_match(mystery_seqfn: str = "mystery.fa") -> sequence [str]:
             best_score = score
             best_match = seq
             best_seq_id = seq_id
+            best_alignment = pairwise2.align.globalxx(mystery_seqfn, seq)[0]
 
-    return best_seq_id, best_match, best_score
+    return best_seq_id, best_match, best_score, best_alignment
 
-def calculate_differences(seq1[str], seq2[str]) -> str:
+def calculate_differences(seq1: str, seq2: str) -> list:
     alignments = pairwise2.align.globalxx(seq1, seq2)
     aligned_seq1, aligned_seq2, _, _, _ = alignments[0]
 
@@ -44,11 +47,11 @@ def calculate_differences(seq1[str], seq2[str]) -> str:
     
     return aligned_seq1, aligned_seq2, differences
 
-sequences = read_fasta()
-mystery_seq_dict = read_fasta()
+sequences = DNA_Seq_ID(multi_seqfn)
+mystery_seq_dict = DNA_Seq_ID(mystery_seqfn)
 mystery_seq = list(mystery_seq_dict.values())[0]
 
-best_seq_id, best_match, best_score = find_best_match()
+best_seq_id, best_match, best_score = find_best_match(mystery_seq, sequences)
 
 print(f"Best Match: {best_seq_id}")
 print(f"Alignment Score: {best_score}")
