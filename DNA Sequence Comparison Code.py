@@ -1,5 +1,7 @@
 from Bio import SeqIO
-from Bio import pairwise2
+from Bio.Align import PairwiseAligner
+from Bio.Seq import Seq
+
 multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
 mystery_seqfn = "./data/project_dog_dna/mystery.fa"
 
@@ -13,12 +15,12 @@ def DNA_Seq_ID(multi_seqfn: str) -> dict:
 
         Example:
     """
-    dog_sequences = {}
+    sequences = {}
 
     with open(multi_seqfn, 'r') as f:
         for record in SeqIO.parse(f, "fasta"):
-            dog_sequences[record.id] = str(record.seq) #uses biopython to iterate over each line in the file and store the sequences in a dictionary
-    return dog_sequences
+            sequences[record.id] = str(record.seq) #uses biopython to iterate over each line in the file and store the sequences in a dictionary
+    return sequences
 
 def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
     """ Find the closest sequence in the multi-sequence file to the mystery sequence.
@@ -30,20 +32,24 @@ def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
 
         Example:
     """
+    Aligner = PairwiseAligner()
     best_match = None
     best_score = -1
     best_alignment = None
     best_seq_id = None
+    
+    mystery_seq_object = seq(mystery_seq)
 
     for seq_id, seq in sequences.items():
-        score = pairwise2.align.globalxx(mystery_seq, seq, score_only = True)
-        
+        seq_obj = Seq(seq)
+        alignments = aligner.align(mystery_seq_object, seq_obj)
+        score = alignments[0].score
 
         if score > best_score:
             best_score = score
             best_match = seq
             best_seq_id = seq_id
-            best_alignment = pairwise2.align.globalxx(mystery_seq, seq)[0]
+            best_alignment = Bio.Align.PairwiseAligner(mystery_seq, seq)[0]
 
     return best_seq_id, best_match, best_score, best_alignment
 
