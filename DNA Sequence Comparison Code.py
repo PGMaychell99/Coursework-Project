@@ -1,7 +1,7 @@
 from Bio import SeqIO
 from Bio import pairwise2
-multi_seqfn = "dog_breeds.fa"
-mystery_seqfn = "mystery.fa"
+multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
+mystery_seqfn = "./data/project_dog_dna/mystery.fa"
 
 def DNA_Seq_ID(multi_seqfn: str) -> dict:
     """ Reads in FASTA file and returns a dictionary of sequences.
@@ -23,16 +23,19 @@ def find_best_match(mystery_seqfn: str, sequences: dict) -> tuple:
     best_score = -1
     best_alignment = None
     best_seq_id = None
+    
+    with open(multi_seqfn, 'r') as f:
+        mystery_seq = "".join([str(record.seq) for record in SeqIO.parse(f, "fasta")])
 
-    for seq_id, seq in sequences.items():
-        alignments = pairwise2.align.globalxx(mystery_seqfn, seq, score_only = True)
-        score = alignments
+        for seq_id, seq in sequences.items():
+            alignments = pairwise2.align.globalxx(mystery_seq, seq, score_only = True)
+            score = alignments
 
-        if score > best_score:
-            best_score = score
-            best_match = seq
-            best_seq_id = seq_id
-            best_alignment = pairwise2.align.globalxx(mystery_seqfn, seq)[0]
+            if score > best_score:
+                best_score = score
+                best_match = seq
+                best_seq_id = seq_id
+                best_alignment = pairwise2.align.globalxx(mystery_seq, seq)[0]
 
     return best_seq_id, best_match, best_score, best_alignment
 
@@ -51,12 +54,12 @@ sequences = DNA_Seq_ID(multi_seqfn)
 mystery_seq_dict = DNA_Seq_ID(mystery_seqfn)
 mystery_seq = list(mystery_seq_dict.values())[0]
 
-best_seq_id, best_match, best_score = find_best_match(mystery_seq, sequences)
+best_seq_id, best_match, best_score, best_alignment = find_best_match(mystery_seq, sequences)
 
 print(f"Best Match: {best_seq_id}")
 print(f"Alignment Score: {best_score}")
-print(f"Aligned Mystery Sequence:\n{aligned_mystery}")
-print(f"Aligned Best Match Sequence:\n{aligned_best}")
-print(f"Differences (Position, Mystery Base, Matched Base):")
-for diff in differences:
-    print(diff)
+print(f"Aligned Mystery Sequence:\n{best_match}")
+print(f"Aligned Best Match Sequence:\n{best_alignment}")
+#print(f"Differences (Position, Mystery Base, Matched Base):")
+#for diff in differences: #need to be defined within the for loop - not outside of it
+    #print(diff)
