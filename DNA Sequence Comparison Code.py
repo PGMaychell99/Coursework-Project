@@ -22,7 +22,7 @@ def find_best_match(mystery_seqfn: str, sequences: dict) -> tuple:
     best_match = None
     best_score = -1
     best_alignment = None
-    best_seq_if = None
+    best_seq_id = None
 
     for seq_id, seq in sequences.items():
         alignments = pairwise2.align.globalxx(mystery_seqfn, seq, score_only = True)
