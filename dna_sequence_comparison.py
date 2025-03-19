@@ -11,6 +11,8 @@ __all__ = [
 from pathlib import Path
 
 # -- 3rd party libraries --
+import Bio
+
 from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 from Bio.Seq import Seq
@@ -18,7 +20,7 @@ from Bio.Seq import Seq
 # -- Internal libraries --
 
 
-def dna_sequences_by_id(multi_seqfn: str) -> dict:
+def dna_sequences_by_id(multi_seqfn: str) -> dict[str, str]:
     """:py:class:`str` : Reads in FASTA file and returns a dictionary of sequences.
 
         Reads in FASTA file and returns a dictionary of sequences.
@@ -47,7 +49,7 @@ def dna_sequences_by_id(multi_seqfn: str) -> dict:
     return sequences
 
 
-def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
+def find_best_match(mystery_seq: str, sequences: dict[str, str]) -> tuple[str, str, float, Bio.Align.Alignment]:
     """:py:class:`tuple` : Find the closest sequence in the multi-sequence file to the mystery sequence.
 
         Takes the dictionary from FASTA file conversion dictionary.
@@ -92,7 +94,7 @@ def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
 
     return best_seq_id, best_match, best_score, best_alignment
 
-def calculate_differences(seq1: str, seq2: str) -> tuple:
+def calculate_differences(seq1: str, seq2: str) -> tuple[str, str, list]:
     """:py:class:`list` : Calculate differences between two sequences.
     
     Parameters
