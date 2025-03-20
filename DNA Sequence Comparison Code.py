@@ -1,11 +1,12 @@
 from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 from Bio.Seq import Seq
+import pytest
 
 multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
 mystery_seqfn = "./data/project_dog_dna/mystery.fa"
 
-def DNA_Seq_ID(multi_seqfn: str) -> dict:
+def dna_seq_id(multi_seqfn: str) -> dict:
     """ Reads in FASTA file and returns a dictionary of sequences.
 
         Description
@@ -32,15 +33,15 @@ def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
 
         Example:
     """
-    Aligner = PairwiseAligner()
+    aligner = PairwiseAligner()
     best_match = None
     best_score = -1
     best_alignment = None
     best_seq_id = None
     
-    mystery_seq_object = seq(mystery_seq)
+    mystery_seq_object = Seq(mystery_seq)
 
-    for seq_id, seq in sequences.items():
+    for i, (seq_id, seq) in enumerate(sequences.items(), start=1):
         seq_obj = Seq(seq)
         alignments = aligner.align(mystery_seq_object, seq_obj)
         score = alignments[0].score
@@ -49,19 +50,21 @@ def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
             best_score = score
             best_match = seq
             best_seq_id = seq_id
-            best_alignment = Bio.Align.PairwiseAligner(mystery_seq, seq)[0]
+            best_alignment = alignments[0]
 
     return best_seq_id, best_match, best_score, best_alignment
 
-def calculate_differences(seq1: str, seq2: str) -> list:
+def calculate_differences(seq1: str, seq2: str) -> tuple:
     """
     
     
     """
-    alignments = pairwise2.align.globalxx(seq1, seq2)
+    aligner = PairwiseAligner()
+    alignments = aligner.align(seq1, seq2)
 
     if not alignments:
         return None, None, []
+    
     aligned_seq1, aligned_seq2, _, _, _ = alignments[0]
 
     differences = []
@@ -71,20 +74,25 @@ def calculate_differences(seq1: str, seq2: str) -> list:
     
     return aligned_seq1, aligned_seq2, differences
 
-sequences = DNA_Seq_ID(multi_seqfn)
-mystery_seq_dict = DNA_Seq_ID(mystery_seqfn)
+if __name__ == '__main__':
+    multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
+    mystery_seqfn = "./data/project_dog_dna/mystery.fa"
 
-if mystery_seq_dict:
-    mystery_seq = list(mystery_seq_dict.values())[0]
-else:
-    raise ValueError("Mystery sequence file is empty or incorrectly formatted")
+    sequences = dna_seq_id(multi_seqfn)
+    mystery_seq_dict = dna_seq_id(mystery_seqfn)
 
-best_seq_id, best_match, best_score, best_alignment = find_best_match(mystery_seq, sequences)
+    if mystery_seq_dict:
+        mystery_seq = list(mystery_seq_dict.values())[0]
+    else:
+        raise ValueError("Mystery sequence file is empty or incorrectly formatted")
 
-print(f"Best Match: {best_seq_id}")
-print(f"Alignment Score: {best_score}")
-print(f"Aligned Mystery Sequence:\n{best_match}")
-print(f"Aligned Best Match Sequence:\n{best_alignment}")
+
+    best_seq_id, best_match, best_score, best_alignment = find_best_match(mystery_seq, sequences)
+
+    print(f"Best Match: {best_seq_id}")
+    print(f"Alignment Score: {best_score}")
+    print(f"Aligned Mystery Sequence:\n{best_match}")
+    print(f"Aligned Best Match Sequence:\n{best_alignment}")
 #print(f"Differences (Position, Mystery Base, Matched Base):")
 #for diff in differences: #need to be defined within the for loop - not outside of it
     #print(diff)
