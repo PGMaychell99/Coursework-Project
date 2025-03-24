@@ -2,7 +2,6 @@ from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 from Bio.Seq import Seq
 import os
-import sys
 import pytest
 
 from dna_sequence_comparison import dna_seq_id, find_best_match, calculate_differences

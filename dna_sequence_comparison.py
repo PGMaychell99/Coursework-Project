@@ -104,8 +104,7 @@ def calculate_differences(seq1: str, seq2: str) -> tuple:
 
     return aligned_seq1, aligned_seq2, differences
 
-def build_phylogenetic_tree(sequences: dict) ->
-
+#def build_phylogenetic_tree(sequences: ...) -> ...:
 
 if __name__ == '__main__':
     multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
