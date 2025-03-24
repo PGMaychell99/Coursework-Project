@@ -63,7 +63,7 @@ def find_best_match(mystery_seq: str, sequences: dict) -> tuple:
 
     return best_seq_id, best_match, best_score, best_alignment
 
-def calculate_differences(seq1: str, seq2: str) -> tuple:
+def calculate_differences(aligned_seq1: str, aligned_seq2: str) -> tuple:
     """ Calculate the differneces between two aligned DNA sequences.
 
         This function aligns two sequences using pairwise sequence alignment and compares their aligned versions.
@@ -85,16 +85,6 @@ def calculate_differences(seq1: str, seq2: str) -> tuple:
 
             'AGCTAGCTA', 'AGCTCGTAA', [(5,'A','C'), (7,'T','G'),(8,'A','T')]
     """
-    aligner = PairwiseAligner()
-    alignments = aligner.align(seq1, seq2) #align seq1 and seq2 determined from find_best_match function. Returns a list of alignment results
-
-    if not alignments: #check that an alignment exists - if it doesn't 'None' will be returned
-        return None, None, []
-    
-    aligned_seq1, aligned_seq2 = alignments[0] #store the first alignment result (best alignment) in aligned_seq1 and aligned_seq2
-
-    print(f"Aligned seq1: {aligned_seq1}")
-    print(f"Aligned seq2: {aligned_seq2}")
 
     differences = [] #initialise empty list to store the differences in
     for i, (base1, base2) in enumerate(zip(aligned_seq1, aligned_seq2)): #check if the base pairs at the current index are matched, if not then store in the differences list
@@ -123,6 +113,8 @@ if __name__ == '__main__':
 
 
     best_seq_id, best_match, best_score, best_alignment = find_best_match(mystery_seq, sequences)
+
+    aligned_seq1, aligned_seq2, differences = calculate_differences(best_match, mystery_seq)
 
     print(f"Best Match: {best_seq_id}")
     print(f"Alignment Score: {best_score}")
