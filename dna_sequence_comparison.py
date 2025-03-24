@@ -91,7 +91,7 @@ def calculate_differences(seq1: str, seq2: str) -> tuple:
     if not alignments: #check that an alignment exists - if it doesn't 'None' will be returned
         return None, None, []
     
-    aligned_seq1, aligned_seq2, _, _, _ = alignments[0] #store the first alignment result (best alignment) in aligned_seq1 and aligned_seq2
+    aligned_seq1, aligned_seq2 = alignments[0] #store the first alignment result (best alignment) in aligned_seq1 and aligned_seq2
 
     differences = [] #initialise empty list to store the differences in
     for i, (base1, base2) in enumerate(zip(aligned_seq1, aligned_seq2)): #check if the base pairs at the current index are matched, if not then sotre in the differences list
