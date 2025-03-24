@@ -1,6 +1,9 @@
 from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 from Bio.Seq import Seq
+from Bio import Phylo
+from Bio import AlignIO
+from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
 
 multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
 mystery_seqfn = "./data/project_dog_dna/mystery.fa"
@@ -100,6 +103,9 @@ def calculate_differences(seq1: str, seq2: str) -> tuple:
         print(diff)
 
     return aligned_seq1, aligned_seq2, differences
+
+def build_phylogenetic_tree(sequences: dict) ->
+
 
 if __name__ == '__main__':
     multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
