@@ -15,7 +15,7 @@ def test_dna_seq_id(mock_fasta_files):
     assert "seq1" in sequences
     assert sequences["seq1"] == "AGCTAGCTAG" #check if sequence "seq1" is in the dictionary and whether it matches the expected value
 
-def test_find_best_match(mock_align, mock_fasta_files):
+def test_find_best_match(mock_fasta_files):
     multi_seqfn, mystery_seqfn = mock_fasta_files #get the multi-seq and mystery sequence files
     sequences = dna_seq_id(multi_seqfn) #store the multi-seq files in dictionary
 

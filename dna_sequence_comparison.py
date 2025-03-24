@@ -93,14 +93,17 @@ def calculate_differences(seq1: str, seq2: str) -> tuple:
     
     aligned_seq1, aligned_seq2 = alignments[0] #store the first alignment result (best alignment) in aligned_seq1 and aligned_seq2
 
+    print(f"Aligned seq1: {aligned_seq1}")
+    print(f"Aligned seq2: {aligned_seq2}")
+
     differences = [] #initialise empty list to store the differences in
-    for i, (base1, base2) in enumerate(zip(aligned_seq1, aligned_seq2)): #check if the base pairs at the current index are matched, if not then sotre in the differences list
-        if base1 != base2:
+    for i, (base1, base2) in enumerate(zip(aligned_seq1, aligned_seq2)): #check if the base pairs at the current index are matched, if not then store in the differences list
+        if base1 != base2 and base1 != '-' and base2 != '-': #check there are no gaps ('-')
             differences.append((i, base1, base2))
     
-    print(f"Differences (Position, Mystery Base, Matched Base):")
-    for diff in differences: #print each difference between the sequences
-        print(diff)
+    #print(f"Differences (Position, Mystery Base, Matched Base):")
+    #for diff in differences: #print each difference between the sequences
+        #print(diff)
 
     return aligned_seq1, aligned_seq2, differences
 

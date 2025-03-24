@@ -1,6 +1,7 @@
 import os 
 import pytest
 
+@pytest.fixture
 def mock_fasta_files():
     mock_fasta = ">seq1\nAGCTAGCTAG\n>seq2\nTCGAAGCTAG\n>seq3\nAGCTAGCTAA/n"
     multi_seqfn = "test_dog_breeds.fa"
