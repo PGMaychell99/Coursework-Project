@@ -4,6 +4,7 @@ from Bio.Seq import Seq
 from Bio import Phylo
 from Bio import AlignIO
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
+import matplotlib.pyplot as plt
 
 multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
 mystery_seqfn = "./data/project_dog_dna/mystery.fa"
@@ -88,16 +89,47 @@ def calculate_differences(aligned_seq1: str, aligned_seq2: str) -> tuple:
 
     differences = [] #initialise empty list to store the differences in
     for i, (base1, base2) in enumerate(zip(aligned_seq1, aligned_seq2)): #check if the base pairs at the current index are matched, if not then store in the differences list
-        if base1 != base2 and base1 != '-' and base2 != '-': #check there are no gaps ('-')
+        if base1 != base2 and base1 != '-' and base2 != '-': #check there are no gaps interferring ('-')
             differences.append((i, base1, base2))
     
-    #print(f"Differences (Position, Mystery Base, Matched Base):")
-    #for diff in differences: #print each difference between the sequences
-        #print(diff)
+    print(f"Differences (Position, Mystery Base, Matched Base):")
+    for diff in differences: #print each difference between the sequences
+        print(diff)
 
     return aligned_seq1, aligned_seq2, differences
 
-#def build_phylogenetic_tree(sequences: ...) -> ...:
+def build_phylogenetic_tree(sequences: dict) -> Phylo.BaseTree.Tree:
+    """ Build a phylogenetic tree from a dictionary of sequences.
+
+        Computes a distance matrix between the sequences (based on identity) and the constructs a phylogenetic tree using the Neighnour-Joining method.
+        It uses PairwiseAligner for pairwise sequence alignment and DistanceCalculator to generate the distance matrix.
+
+        Parameters - dict(dictionary containing multiple sequences and their identities)
+        Returns - Phylo.BaseTree.Tree()
+    """
+    aligner = PairwiseAligner #initialise the PairwiseAligner
+    aligned_sequences = [] #empty list to store all the pairwise alignments
+    sequence_ids = list(sequences.keys()) #list ofr storing the IDs
+    for i in range(len(sequences)): #perform pairwise alignmnet between all sequences
+        for j in range(i+1, len(sequences)):
+            seq1, seq2 = sequences[sequence_ids[i]], sequences[sequence_ids[j]]
+            alignments = aligner.align(Seq(seq1), Seq(seq2))
+            aligned_sequences.append(alignments[0])
+        
+    #alignments_list = [aligner.align(Seq(sequences[seq_id]), Seq(sequences[seq_id]))[0] for seq_id in sequences]
+    calculator = DistanceCalculator('identity')
+    distance_matrix = calculator.get_distance(aligned_sequences)
+
+    constructor = DistanceTreeConstructor()
+    tree = constructor.nj(distance_matrix)
+
+    return tree
+
+def plot_phylogenetic_tree(tree: Phylo.BaseTree.Tree):
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111)
+    Phylo.draw(tree, do_show=False, axes=ax)
+    plt.show()
 
 if __name__ == '__main__':
     multi_seqfn = "./data/project_dog_dna/dog_breeds.fa"
@@ -120,3 +152,6 @@ if __name__ == '__main__':
     print(f"Alignment Score: {best_score}")
     print(f"Aligned Mystery Sequence:\n{best_match}")
     print(f"Aligned Best Match Sequence:\n{best_alignment}")
+    
+    tree = build_phylogenetic_tree(sequences)
+    plot_phylogenetic_tree(tree)
