@@ -109,14 +109,13 @@ def build_phylogenetic_tree(sequences: dict) -> Phylo.BaseTree.Tree:
     """
     aligner = PairwiseAligner #initialise the PairwiseAligner
     aligned_sequences = [] #empty list to store all the pairwise alignments
-    sequence_ids = list(sequences.keys()) #list ofr storing the IDs
+    sequence_ids = list(sequences.keys()) #list for storing the IDs
     for i in range(len(sequences)): #perform pairwise alignmnet between all sequences
         for j in range(i+1, len(sequences)):
             seq1, seq2 = sequences[sequence_ids[i]], sequences[sequence_ids[j]]
             alignments = aligner.align(Seq(seq1), Seq(seq2))
             aligned_sequences.append(alignments[0])
         
-    #alignments_list = [aligner.align(Seq(sequences[seq_id]), Seq(sequences[seq_id]))[0] for seq_id in sequences]
     calculator = DistanceCalculator('identity')
     distance_matrix = calculator.get_distance(aligned_sequences)
 
