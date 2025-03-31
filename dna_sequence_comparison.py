@@ -107,7 +107,7 @@ def build_phylogenetic_tree(sequences: dict) -> Phylo.BaseTree.Tree:
         Parameters - dict(dictionary containing multiple sequences and their identities)
         Returns - Phylo.BaseTree.Tree()
     """
-    aligner = PairwiseAligner #initialise the PairwiseAligner
+    aligner = PairwiseAligner() #initialise the PairwiseAligner
     aligned_sequences = [] #empty list to store all the pairwise alignments
     sequence_ids = list(sequences.keys()) #list for storing the IDs
     for i in range(len(sequences)): #perform pairwise alignmnet between all sequences
@@ -116,18 +116,22 @@ def build_phylogenetic_tree(sequences: dict) -> Phylo.BaseTree.Tree:
             alignments = aligner.align(Seq(seq1), Seq(seq2))
             aligned_sequences.append(alignments[0])
         
-    calculator = DistanceCalculator('identity')
+    calculator = DistanceCalculator('identity') #create a DistanceCalculator object and multi-seq align to get sequence distances
     distance_matrix = calculator.get_distance(aligned_sequences)
 
     constructor = DistanceTreeConstructor()
-    tree = constructor.nj(distance_matrix)
+    tree = constructor.nj(distance_matrix) #Generate tree using distance constructor and Neighbour-Joining
 
     return tree
 
 def plot_phylogenetic_tree(tree: Phylo.BaseTree.Tree):
-    fig = plt.figure(figsize=(10, 10))
+    """ Plot the phylogenetic tree using matplotlib.
+
+        Parameters - tree(A Phylo.BaseTree.Tree object representing the phylogenetic tree)
+    """
+    fig = plt.figure(figsize=(10, 10))#define the size of the plot
     ax = fig.add_subplot(111)
-    Phylo.draw(tree, do_show=False, axes=ax)
+    Phylo.draw(tree, do_show=False, axes=ax) #draw the tree on subplot (ax) so that it shows in plt.show()
     plt.show()
 
 if __name__ == '__main__':
